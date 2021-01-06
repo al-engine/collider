@@ -1,4 +1,4 @@
-import GameObject, {Params} from "game_object";
+import GameObject, {GameObjectParams} from "game_object";
 
 export interface OldPosition {
   oldPosition: {
@@ -7,7 +7,7 @@ export interface OldPosition {
   }
 }
 
-export function calcPositionFor<T extends Params>({movingObj, obstacles}: {movingObj: GameObject<T> & OldPosition, obstacles: GameObject<T>}) {
+export function calcPositionFor<T extends GameObjectParams>({movingObj, obstacles}: {movingObj: GameObject<T> & OldPosition, obstacles: GameObject<T>}) {
   if (movingObj.speed.x === 0) {
     if (movingObj.speed.y > 0) {
       movingObj.position.y = calcLimitedMoving(movingObj.speed.y, movingObj.position.y, obstacles.position.y - movingObj.size.height);
