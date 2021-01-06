@@ -1,20 +1,20 @@
-import GameObject, {Params} from "game_object";
+import GameObject, {GameObjectParams} from "game_object";
 
-export default class CollisionResolver<GameObjectParams extends Params> extends GameObject<GameObjectParams> {
+export default class CollisionResolver<Params extends GameObjectParams> extends GameObject<Params> {
 
-  colliders = Array<GameObject<GameObjectParams>>();
+  colliders = Array<GameObject<Params>>();
 
-  register = (gameObject: GameObject<GameObjectParams>) => {
+  register = (gameObject: GameObject<Params>) => {
     this.colliders.push(gameObject);
   };
 
-  unregister = (gameObject: GameObject<GameObjectParams>) => {
+  unregister = (gameObject: GameObject<Params>) => {
     const index = this.colliders.indexOf(gameObject);
     if (index !== -1) {
       this.colliders.splice(index, 1);
     }
   };
-  check = (obj: GameObject<GameObjectParams> & CollisionReceiver<GameObjectParams>) => {
+  check = (obj: GameObject<Params> & CollisionReceiver<Params>) => {
     for(let collider of this.colliders) {
       if (collider !== obj) {
         if (obj.position.x < collider.position.x + collider.size.width &&
@@ -28,8 +28,8 @@ export default class CollisionResolver<GameObjectParams extends Params> extends 
   };
 }
 
-export interface CollisionReceiver<GameObjectParams extends Params> {
-  receiveCollision(other: GameObject<GameObjectParams>):void;
+export interface CollisionReceiver<Params extends GameObjectParams> {
+  receiveCollision(other: GameObject<Params>):void;
 }
 
 export { ensureValidMovement, calcPositionFor, OldPosition } from "./obstaclesCollision";
