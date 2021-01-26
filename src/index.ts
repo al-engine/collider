@@ -1,7 +1,8 @@
-import GameObject, {GameObjectParams} from "game_object";
+import GameObject, { GameObjectParams } from '@al-engine/game_object';
 
-export default class CollisionResolver<Params extends GameObjectParams> extends GameObject<Params> {
-
+export default class CollisionResolver<
+  Params extends GameObjectParams
+> extends GameObject<Params> {
   colliders = Array<GameObject<Params>>();
 
   register = (gameObject: GameObject<Params>) => {
@@ -15,12 +16,14 @@ export default class CollisionResolver<Params extends GameObjectParams> extends 
     }
   };
   check = (obj: GameObject<Params> & CollisionReceiver<Params>) => {
-    for(let collider of this.colliders) {
+    for (let collider of this.colliders) {
       if (collider !== obj) {
-        if (obj.position.x < collider.position.x + collider.size.width &&
+        if (
+          obj.position.x < collider.position.x + collider.size.width &&
           obj.position.x + obj.size.width > collider.position.x &&
           obj.position.y < collider.position.y + collider.size.height &&
-          obj.position.y + obj.size.height > collider.position.y) {
+          obj.position.y + obj.size.height > collider.position.y
+        ) {
           obj.receiveCollision(collider);
         }
       }
@@ -29,7 +32,11 @@ export default class CollisionResolver<Params extends GameObjectParams> extends 
 }
 
 export interface CollisionReceiver<Params extends GameObjectParams> {
-  receiveCollision(other: GameObject<Params>):void;
+  receiveCollision(other: GameObject<Params>): void;
 }
 
-export { ensureValidMovement, calcPositionFor, OldPosition } from "./obstaclesCollision";
+export {
+  ensureValidMovement,
+  calcPositionFor,
+  OldPosition,
+} from './obstaclesCollision';
