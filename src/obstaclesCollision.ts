@@ -1,4 +1,5 @@
 import GameObject, { GameObjectParams } from '@al-engine/game_object';
+import { Position } from '@al-engine/core';
 
 export interface OldPosition {
   oldPosition: {
@@ -14,116 +15,126 @@ export function calcPositionFor<T extends GameObjectParams>({
   movingObj: GameObject<T> & OldPosition;
   obstacles: GameObject<T>;
 }) {
+  const objPosition = movingObj.getAbsolutePosition();
+  const obstaclePosition = obstacles.getAbsolutePosition();
+  let oldPosition: Position;
+  if (movingObj.parent) {
+    oldPosition = {
+      x: movingObj.oldPosition.x + movingObj.parent.position.x,
+      y: movingObj.oldPosition.y + movingObj.parent.position.y,
+    }
+  }
+  oldPosition = {...movingObj.oldPosition};
   if (movingObj.speed.x === 0) {
     if (movingObj.speed.y > 0) {
-      movingObj.position.y = calcLimitedMoving(
+      movingObj.setAbsolute({y: calcLimitedMoving(
         movingObj.speed.y,
-        movingObj.position.y,
-        obstacles.position.y - movingObj.size.height
-      );
+        objPosition.y,
+        obstaclePosition.y - movingObj.size.height
+      )});
     } else {
-      movingObj.position.y = calcLimitedMoving(
+      movingObj.setAbsolute({y: calcLimitedMoving(
         movingObj.speed.y,
-        movingObj.position.y,
-        obstacles.position.y + obstacles.size.height
-      );
+        objPosition.y,
+        obstaclePosition.y + obstacles.size.height
+      )});
     }
   } else if (movingObj.speed.y === 0) {
     if (movingObj.speed.x > 0) {
-      movingObj.position.x = calcLimitedMoving(
+      movingObj.setAbsolute({x: calcLimitedMoving(
         movingObj.speed.x,
-        movingObj.position.x,
-        obstacles.position.x - movingObj.size.width
-      );
+        objPosition.x,
+        obstaclePosition.x - movingObj.size.width
+      )});
     } else {
-      movingObj.position.x = calcLimitedMoving(
+      movingObj.setAbsolute({x: calcLimitedMoving(
         movingObj.speed.x,
-        movingObj.position.x,
-        obstacles.position.x + obstacles.size.width
-      );
+        objPosition.x,
+        obstaclePosition.x + obstacles.size.width
+      )});
     }
   } else if (movingObj.speed.x > 0) {
     if (movingObj.speed.y > 0) {
       if (
-        obstacles.position.x <
-        movingObj.oldPosition.x + movingObj.size.width
+        obstaclePosition.x <
+        oldPosition.x + movingObj.size.width
       ) {
-        movingObj.position.y = calcLimitedMoving(
+        movingObj.setAbsolute({y: calcLimitedMoving(
           movingObj.speed.y,
-          movingObj.position.y,
-          obstacles.position.y - movingObj.size.height
-        );
+          objPosition.y,
+          obstaclePosition.y - movingObj.size.height
+        )});
       } else if (
-        obstacles.position.y <
-        movingObj.oldPosition.y + movingObj.size.height
+        obstaclePosition.y <
+        oldPosition.y + movingObj.size.height
       ) {
-        movingObj.position.x = calcLimitedMoving(
+        movingObj.setAbsolute({x: calcLimitedMoving(
           movingObj.speed.x,
-          movingObj.position.x,
-          obstacles.position.x - movingObj.size.width
-        );
+          objPosition.x,
+          obstaclePosition.x - movingObj.size.width
+        )});
       }
     } else {
       if (
-        obstacles.position.x <
-        movingObj.oldPosition.x + movingObj.size.width
+        obstaclePosition.x <
+        oldPosition.x + movingObj.size.width
       ) {
-        movingObj.position.y = calcLimitedMoving(
+        movingObj.setAbsolute({y = calcLimitedMoving(
           movingObj.speed.y,
-          movingObj.position.y,
-          obstacles.position.y + obstacles.size.height
-        );
+          objPosition.y,
+          obstaclePosition.y + obstacles.size.height
+        )});
       } else if (
-        obstacles.position.y + obstacles.size.height >
-        movingObj.oldPosition.y
+        obstaclePosition.y + obstacles.size.height >
+        oldPosition.y
       ) {
-        movingObj.position.x = calcLimitedMoving(
+        movingObj.setAbsolute({x: calcLimitedMoving(
           movingObj.speed.x,
-          movingObj.position.x,
-          obstacles.position.x - movingObj.size.width
-        );
+          objPosition.x,
+          obstaclePosition.x - movingObj.size.width
+        )});
       }
     }
   } else {
     if (movingObj.speed.y < 0) {
       if (
-        obstacles.position.x + obstacles.size.width >
-        movingObj.oldPosition.x
+        obstaclePosition.x + obstacles.size.width >
+        oldPosition.x
       ) {
-        movingObj.position.y = calcLimitedMoving(
+        movingObj.setAbsolute({y: calcLimitedMoving(
           movingObj.speed.y,
-          movingObj.position.y,
-          obstacles.position.y + obstacles.size.height
-        );
+          objPosition.y,
+          obstaclePosition.y + obstacles.size.height
+        )});
       } else if (
-        obstacles.position.y + obstacles.size.height >
-        movingObj.oldPosition.y
+        obstaclePosition.y + obstacles.size.height >
+        oldPosition.y
       ) {
-        movingObj.position.x = calcLimitedMoving(
+        movingObj.setAbsolute({x: calcLimitedMoving(
           movingObj.speed.x,
-          movingObj.position.x,
-          obstacles.position.x + obstacles.size.width
-        );
+          objPosition.x,
+          obstaclePosition.x + obstacles.size.width
+        )});
       }
     } else {
       if (
-        obstacles.position.x + obstacles.size.width >
-        movingObj.oldPosition.x
+        obstaclePosition.x + obstacles.size.width >
+        oldPosition.x
       ) {
-        movingObj.position.y = calcLimitedMoving(
+        movingObj.setAbsolute({y: calcLimitedMoving(
           movingObj.speed.y,
-          movingObj.position.y,
-          obstacles.position.y - movingObj.size.height
-        );
+          objPosition.y,
+          obstaclePosition.y - movingObj.size.height
+        )});
       } else if (
-        obstacles.position.y <
-        movingObj.oldPosition.y + movingObj.size.height
+        obstaclePosition.y <
+        oldPosition.y + movingObj.size.height
       ) {
-        movingObj.position.x = calcLimitedMoving(
+        movingObj.setAbsolute({x: calcLimitedMoving(
           movingObj.speed.x,
-          movingObj.position.x,
-          obstacles.position.x + obstacles.size.width
-        );
+          objPosition.x,
+          obstaclePosition.x + obstacles.size.width
+        )});
       }
     }
   }

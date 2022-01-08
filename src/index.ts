@@ -18,11 +18,13 @@ export default class CollisionResolver<
   check = (obj: GameObject<Params> & CollisionReceiver<Params>) => {
     for (let collider of this.colliders) {
       if (collider !== obj) {
+        const objPosition = obj.getAbsolutePosition();
+        const colliderPosition = collider.getAbsolutePosition();
         if (
-          obj.position.x < collider.position.x + collider.size.width &&
-          obj.position.x + obj.size.width > collider.position.x &&
-          obj.position.y < collider.position.y + collider.size.height &&
-          obj.position.y + obj.size.height > collider.position.y
+          objPosition.x < colliderPosition.x + collider.size.width &&
+          objPosition.x + obj.size.width > colliderPosition.x &&
+          objPosition.y < colliderPosition.y + collider.size.height &&
+          objPosition.y + obj.size.height > colliderPosition.y
         ) {
           obj.receiveCollision(collider);
         }
